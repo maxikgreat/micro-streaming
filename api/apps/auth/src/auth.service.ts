@@ -2,7 +2,19 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class AuthService {
-  getHello(): string {
-    return 'Hello World!';
+  getUsers() {
+    return [
+      {
+        id: 1,
+        name: 'Max',
+      },
+    ];
+  }
+
+  postUser() {
+    return {
+      id: 1,
+      name: 'Max',
+    };
   }
 }
