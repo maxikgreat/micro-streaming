@@ -34,6 +34,27 @@ import { ClientProxyFactory, Transport } from '@nestjs/microservices';
         });
       },
     },
+    {
+      provide: 'PRESENCE_SERVICE',
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService<EnvironmentVariables>) => {
+        const user = configService.getOrThrow('RABBITMQ_USER');
+        const password = configService.getOrThrow('RABBITMQ_PASS');
+        const host = configService.getOrThrow('RABBITMQ_HOST');
+        const queue = configService.getOrThrow('RABBITMQ_PRESENCE_QUEUE');
+
+        return ClientProxyFactory.create({
+          transport: Transport.RMQ,
+          options: {
+            urls: [`amqp://${user}:${password}@${host}`],
+            queue,
+            queueOptions: {
+              durable: true,
+            },
+          },
+        });
+      },
+    },
   ],
 })
 export class AppModule {}

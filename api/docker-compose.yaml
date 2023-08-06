@@ -12,6 +12,23 @@ services:
     env_file:
       - .env
 
+  api:
+    build:
+      context: ./
+      dockerfile: ./apps/api/Dockerfile
+    ports:
+      - '4000:5000'
+    env_file:
+      - .env
+    depends_on:
+      - rabbitmq
+      - auth
+      - presence
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    command: npm run start:dev api
+
   auth:
     build:
       context: ./
@@ -26,21 +43,19 @@ services:
       - /usr/src/app/node_modules
     command: npm run start:dev auth
 
-  api:
+  presence:
     build:
       context: ./
-      dockerfile: ./apps/api/Dockerfile
-    ports:
-      - '4000:5000'
+      dockerfile: ./apps/presence/Dockerfile
     env_file:
       - .env
     depends_on:
       - rabbitmq
-      - auth
+      - postgres
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
-    command: npm run start:dev api
+    command: npm run start:dev presence
 
   postgres:
     image: postgres
