@@ -4,7 +4,8 @@ import { AuthService } from './auth.service';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from 'apps/auth/src/user.entity';
-import { dataSourceOptions } from 'apps/auth/src/db/data-source';
+import { SharedModule } from '@app/shared';
+import { PostgresDBModule } from '@app/shared/postgresdb.module';
 
 @Module({
   imports: [
@@ -12,7 +13,8 @@ import { dataSourceOptions } from 'apps/auth/src/db/data-source';
       isGlobal: true,
       envFilePath: './.env',
     }),
-    TypeOrmModule.forRoot(dataSourceOptions),
+    SharedModule,
+    PostgresDBModule,
     TypeOrmModule.forFeature([UserEntity]),
   ],
   controllers: [AuthController],
